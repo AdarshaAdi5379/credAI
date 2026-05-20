@@ -1,4 +1,4 @@
-# AI Spend Audit - Implementation Instructions
+# credAI - AI Spend Audit Implementation Instructions
 
 ## Project Goal
 Build a production-quality web app called **AI Spend Audit** for startup founders and engineering managers.
