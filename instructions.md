@@ -300,6 +300,6 @@ Ship something that is:
 - Initialize the project as a git repository before making changes if `.git` is missing.
 - After each successful implementation step, create a clear commit with a meaningful message.
 - Use conventional commit style when possible, such as `feat:`, `fix:`, `docs:`, `refactor:`, or `test:`.
-- Push committed changes to the GitHub repository named `credex` as you go.
+- Push committed changes to the GitHub repository named `credAI` as you go.
 - Keep commits small and tied to one completed step so the history shows real progress.
 - Do not batch unrelated changes into one commit.
