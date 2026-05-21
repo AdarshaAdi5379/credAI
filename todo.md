@@ -15,46 +15,46 @@ This file is the step-by-step build order for the full project.
 
 ## Phase 1 - Project Foundation
 - [ ] Confirm the final product name, repository name, and deployment target.
-- [ ] Read `prd.md` and `instructions.md` end to end before coding.
+- [x] Read `prd.md` and `instructions.md` end to end before coding.
 - [ ] Choose the final stack and document the choice in `ARCHITECTURE.md`.
-- [ ] Initialize the app scaffold if it does not already exist.
-- [ ] Set up TypeScript, linting, formatting, and path aliases.
-- [ ] Create the base folder structure: `app/`, `components/`, `lib/`, `services/`, `types/`, `hooks/`.
-- [ ] Add the main layout, global styles, metadata defaults, and favicon/logo assets.
+- [x] Initialize the app scaffold if it does not already exist.
+- [x] Set up TypeScript, linting, formatting, and path aliases.
+- [x] Create the base folder structure: `app/`, `components/`, `lib/`, `services/`, `types/`, `hooks/`.
+- [x] Add the main layout, global styles, metadata defaults, and favicon/logo assets.
 - [ ] Add environment variable handling and a checked-in example env file if needed.
-- [ ] Create the first commit for the scaffold and push it.
+- [x] Create the first commit for the scaffold and push it.
 
 ## Phase 2 - Product Research and Content
-- [ ] Write `PRICING_DATA.md` with official vendor pricing URLs for every supported tool and plan.
-- [ ] Verify that each pricing number used in the audit engine is traceable to a source URL.
-- [ ] Write the first version of `PROMPTS.md` for the AI summary prompt and fallback strategy.
-- [ ] Draft `LANDING_COPY.md` with the homepage headline, CTA, social proof block, and FAQ.
-- [ ] Draft `GTM.md` with target user, channels, first-100-user plan, and unfair advantage.
-- [ ] Draft `ECONOMICS.md` with lead value, CAC assumptions, conversion math, and ARR scenario.
-- [ ] Draft `METRICS.md` with the North Star metric, input metrics, instrumentation, and pivot threshold.
+- [x] Write `PRICING_DATA.md` with official vendor pricing URLs for every supported tool and plan.
+- [x] Verify that each pricing number used in the audit engine is traceable to a source URL.
+- [x] Write the first version of `PROMPTS.md` for the AI summary prompt and fallback strategy.
+- [x] Draft `LANDING_COPY.md` with the homepage headline, CTA, social proof block, and FAQ.
+- [x] Draft `GTM.md` with target user, channels, first-100-user plan, and unfair advantage.
+- [x] Draft `ECONOMICS.md` with lead value, CAC assumptions, conversion math, and ARR scenario.
+- [x] Draft `METRICS.md` with the North Star metric, input metrics, instrumentation, and pivot threshold.
 - [ ] Run and document three real user interviews in `USER_INTERVIEWS.md`.
-- [ ] Add the first documentation commit and push it.
+- [x] Add the first documentation commit and push it.
 
 ## Phase 3 - Audit Data Model
-- [ ] Define the canonical tool list and supported plans in `types/`.
-- [ ] Define form input types for spend, seats, team size, and use case.
-- [ ] Define audit output types for recommendations, savings, and summary text.
-- [ ] Define lead capture and public audit payload types.
-- [ ] Define validation schemas for all user-facing inputs.
-- [ ] Add a commit for the shared types and schemas.
+- [x] Define the canonical tool list and supported plans in `types/`.
+- [x] Define form input types for spend, seats, team size, and use case.
+- [x] Define audit output types for recommendations, savings, and summary text.
+- [x] Define lead capture and public audit payload types.
+- [x] Define validation schemas for all user-facing inputs.
+- [x] Add a commit for the shared types and schemas.
 
 ## Phase 4 - Deterministic Audit Engine
-- [ ] Create a standalone audit engine module.
-- [ ] Encode same-vendor downgrade rules.
-- [ ] Encode team-size and plan-fit rules.
+- [x] Create a standalone audit engine module.
+- [x] Encode same-vendor downgrade rules.
+- [x] Encode team-size and plan-fit rules.
 - [ ] Encode low-volume API-vs-subscription rules.
 - [ ] Encode use-case fit rules for coding, writing, data, research, and mixed use.
 - [ ] Encode Credex-credit opportunity rules where applicable.
-- [ ] Ensure the engine never invents savings and returns zero when uncertain.
-- [ ] Add clear human-readable reasons for every recommendation.
-- [ ] Add a helper that calculates monthly and annual savings totals.
+- [x] Ensure the engine never invents savings and returns zero when uncertain.
+- [x] Add clear human-readable reasons for every recommendation.
+- [x] Add a helper that calculates monthly and annual savings totals.
 - [ ] Add unit tests for each rule path.
-- [ ] Add a commit for the audit engine and its tests.
+- [x] Add a commit for the audit engine and its tests.
 
 ## Phase 5 - Audit Engine Test Coverage
 - [ ] Write at least five tests covering the audit engine behavior.
