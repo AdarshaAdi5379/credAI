@@ -114,12 +114,22 @@ function CopyLinkButton() {
   );
 }
 
-export function AuditResults({ result, onReset }: { result: AuditResult; onReset?: () => void }) {
+export function AuditResults({ result, auditId, onReset }: { result: AuditResult; auditId: string; onReset?: () => void }) {
   const { totals, findings, opportunities, credexCtaTier } = result;
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [aiSummaryLoading, setAiSummaryLoading] = useState(false);
   const [aiSummaryError, setAiSummaryError] = useState(false);
   const fetched = useRef(false);
+
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadCompany, setLeadCompany] = useState("");
+  const [leadRole, setLeadRole] = useState("");
+  const [leadTeamSize, setLeadTeamSize] = useState(result.input.teamSize);
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
+  const [leadError, setLeadError] = useState<string | null>(null);
+  const honeypotRef = useRef("");
 
   useEffect(() => {
     if (fetched.current) return;
@@ -213,6 +223,137 @@ export function AuditResults({ result, onReset }: { result: AuditResult; onReset
       </div>
 
       <CredexCtaSection tier={credexCtaTier} monthlySavings={totals.monthlySavingsUsd} />
+
+      {!leadSubmitted ? (
+        <div className="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
+          {!showLeadForm ? (
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                Save this report
+              </div>
+              <p className="max-w-md text-sm text-zinc-600 dark:text-zinc-400">
+                Enter your email to get a shareable link and confirmation. No spam.
+              </p>
+              <Button type="button" variant="primary" onClick={() => setShowLeadForm(true)}>
+                Save my report
+              </Button>
+            </div>
+          ) : (
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setLeadError(null);
+                if (honeypotRef.current) {
+                  setLeadSubmitted(true);
+                  return;
+                }
+                setLeadSubmitting(true);
+                try {
+                  const res = await fetch("/api/leads", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                      honeypot: honeypotRef.current,
+                      auditId,
+                      email: leadEmail,
+                      companyName: leadCompany || undefined,
+                      role: leadRole || undefined,
+                      teamSize: leadTeamSize,
+                    }),
+                  });
+                  if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    setLeadError(data.error ?? "Failed to save. Try again.");
+                    return;
+                  }
+                  setLeadSubmitted(true);
+                } catch {
+                  setLeadError("Network error. Try again.");
+                } finally {
+                  setLeadSubmitting(false);
+                }
+              }}
+            >
+              <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                Save your report
+              </div>
+
+              <div className="hidden" aria-hidden="true">
+                <input
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypotRef.current}
+                  onChange={(e) => { honeypotRef.current = e.target.value; }}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <label className="flex flex-col gap-1 sm:col-span-2">
+                  <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Email *</span>
+                  <input
+                    required
+                    type="email"
+                    className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                    value={leadEmail}
+                    onChange={(e) => setLeadEmail(e.target.value)}
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Company</span>
+                  <input
+                    className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                    value={leadCompany}
+                    onChange={(e) => setLeadCompany(e.target.value)}
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Role</span>
+                  <input
+                    className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                    value={leadRole}
+                    onChange={(e) => setLeadRole(e.target.value)}
+                  />
+                </label>
+              </div>
+
+              {leadError ? (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+                  {leadError}
+                </div>
+              ) : null}
+
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  className="text-xs text-zinc-500 underline underline-offset-2 hover:text-zinc-700"
+                  onClick={() => setShowLeadForm(false)}
+                >
+                  Not now
+                </button>
+                <Button type="submit" disabled={leadSubmitting}>
+                  {leadSubmitting ? "Saving..." : "Save report"}
+                </Button>
+              </div>
+            </form>
+          )}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-800 dark:bg-emerald-950/30">
+          <div className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
+            Report saved!
+          </div>
+          <p className="mt-1 text-sm text-emerald-700 dark:text-emerald-300">
+            Your audit is saved. Shareable URL:{" "}
+            <a
+              href={`/audit/${auditId}`}
+              className="font-medium underline underline-offset-2"
+            >
+              /audit/{auditId}
+            </a>
+          </p>
+        </div>
+      )}
 
       {opportunities.length > 0 ? (
         <div className="space-y-2">

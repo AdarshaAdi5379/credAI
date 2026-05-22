@@ -7,6 +7,7 @@ import { Button } from "@/components/Button";
 import { useLocalStorageState } from "@/hooks/useLocalStorageState";
 import { parseSpendFormInput } from "@/lib/validation";
 import { runAudit } from "@/services/audit";
+import { saveAudit } from "@/services/storage";
 import type { AuditResult, SpendFormInput, ToolId, UseCaseId } from "@/types";
 import { TOOL_LABELS, TOOL_PLAN_LABELS } from "@/types/tools";
 
@@ -57,6 +58,7 @@ export function SpendAuditForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FormError[]>([]);
   const [result, setResult] = useState<AuditResult | null>(null);
+  const [auditId, setAuditId] = useState<string | null>(null);
 
   const input = persisted.value;
   const setInput = persisted.setValue;
@@ -94,6 +96,8 @@ export function SpendAuditForm() {
     try {
       const parsed = parseSpendFormInput(input);
       const audit = runAudit(parsed);
+      const id = saveAudit(audit);
+      setAuditId(id);
       setResult(audit);
     } catch (e) {
       setResult(null);
@@ -275,8 +279,8 @@ export function SpendAuditForm() {
         </div>
       </div>
 
-      {result ? (
-        <AuditResults result={result} onReset={() => setResult(null)} />
+      {result && auditId ? (
+        <AuditResults result={result} auditId={auditId} onReset={() => { setResult(null); setAuditId(null); }} />
       ) : null}
     </div>
   );
