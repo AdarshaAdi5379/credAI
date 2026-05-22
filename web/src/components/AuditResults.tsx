@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { AuditOpportunity, AuditResult } from "@/types";
+import type { AuditResult } from "@/types";
 import { TOOL_LABELS } from "@/types/tools";
+import { fetchAiSummary } from "@/services/aiSummary";
 import { buildFallbackSummary } from "@/services/summaryFallback";
 import { Button } from "@/components/Button";
 
@@ -115,6 +116,24 @@ function CopyLinkButton() {
 
 export function AuditResults({ result, onReset }: { result: AuditResult; onReset?: () => void }) {
   const { totals, findings, opportunities, credexCtaTier } = result;
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [aiSummaryLoading, setAiSummaryLoading] = useState(false);
+  const [aiSummaryError, setAiSummaryError] = useState(false);
+  const fetched = useRef(false);
+
+  useEffect(() => {
+    if (fetched.current) return;
+    fetched.current = true;
+    setAiSummaryLoading(true);
+    fetchAiSummary(result).then((res) => {
+      setAiSummaryLoading(false);
+      if (res.ok) {
+        setAiSummary(res.summary);
+      } else {
+        setAiSummaryError(true);
+      }
+    });
+  }, [result]);
 
   const totalCurrent = totals.currentMonthlyUsd;
   const totalRecommended = totals.recommendedMonthlyUsd;
@@ -213,9 +232,22 @@ export function AuditResults({ result, onReset }: { result: AuditResult; onReset
 
       <div className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
         <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          Summary
+          {aiSummary ? "AI Summary" : "Summary"}
         </div>
-        <p className="mt-2 leading-6">{buildFallbackSummary(result)}</p>
+        {aiSummaryLoading ? (
+          <div className="mt-3 flex items-center gap-3">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-600" />
+            <span className="text-zinc-500">Generating AI summary...</span>
+          </div>
+        ) : null}
+        <p className="mt-2 leading-6">
+          {aiSummary ?? buildFallbackSummary(result)}
+        </p>
+        {aiSummaryError && !aiSummary ? (
+          <p className="mt-1 text-xs text-zinc-500">
+            AI summary unavailable. Showing a templated version instead.
+          </p>
+        ) : null}
       </div>
 
       <div className="flex flex-wrap gap-3 pt-2">
