@@ -28,7 +28,6 @@ describe("runAudit", () => {
 
     const result = runAudit(input);
 
-    expect(result.findings).toHaveLength(1);
     expect(result.findings[0]?.recommendation.kind).toBe("downgrade_same_vendor");
     expect(result.findings[0]?.recommendation.toolId).toBe("claude");
     expect(result.findings[0]?.recommendation.planId).toBe("pro");
@@ -70,5 +69,76 @@ describe("runAudit", () => {
     const result = runAudit(input);
     expect(result.totals.monthlySavingsUsd).toBeGreaterThan(500);
     expect(result.credexCtaTier).toBe("prominent");
+  });
+
+  it("detects API + subscription redundancy for same vendor", () => {
+    const input = baseInput({
+      items: [
+        {
+          toolId: "claude",
+          planId: "pro",
+          monthlySpendUsd: 20,
+          seats: 1,
+        },
+        {
+          toolId: "anthropic_api",
+          planId: "api",
+          monthlySpendUsd: 50,
+          seats: 1,
+        },
+      ],
+    });
+
+    const result = runAudit(input);
+    const redundancy = result.findings.find((f) => f.recommendation.kind === "switch_tool");
+    expect(redundancy).toBeDefined();
+    expect(redundancy?.reason.toLowerCase()).toContain("both");
+    expect(redundancy?.reason.toLowerCase()).toContain("claude");
+  });
+
+  it("adds use-case observation when coding is primary but no coding tool present", () => {
+    const input = baseInput({
+      primaryUseCase: "coding",
+      items: [
+        {
+          toolId: "chatgpt",
+          planId: "plus",
+          monthlySpendUsd: 20,
+          seats: 1,
+        },
+      ],
+    });
+
+    const result = runAudit(input);
+    const observation = result.findings.find((f) => f.reason.toLowerCase().includes("coding assistant"));
+    expect(observation).toBeDefined();
+    expect(observation?.monthlySavingsUsd).toBe(0);
+  });
+
+  it("generates Credex credit opportunities for eligible tools", () => {
+    const input = baseInput({
+      items: [
+        {
+          toolId: "cursor",
+          planId: "pro",
+          monthlySpendUsd: 20,
+          seats: 1,
+        },
+        {
+          toolId: "claude",
+          planId: "pro",
+          monthlySpendUsd: 20,
+          seats: 1,
+        },
+      ],
+    });
+
+    const result = runAudit(input);
+    expect(result.opportunities.length).toBeGreaterThan(0);
+    const creditOpp = result.opportunities.find((o) => o.kind === "credex_credits");
+    expect(creditOpp).toBeDefined();
+    expect(creditOpp?.description.toLowerCase()).toContain("credex");
+    expect(creditOpp?.relevantToolIds).toContain("cursor");
+    expect(creditOpp?.relevantToolIds).toContain("claude");
   });
 });

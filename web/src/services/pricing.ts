@@ -17,11 +17,8 @@ export const PRICING_USD: Record<ToolId, PriceTable> = {
   claude: {
     free: 0,
     pro: 20,
-    // Max is usage-based on claude.ai; it is a flat monthly subscription for an individual.
-    max_5x: 100,
-    max_20x: 200,
-    team_standard: 25,
-    team_premium: 125,
+    max: 100,
+    team: 25,
   },
   chatgpt: {
     plus: 20,

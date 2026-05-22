@@ -147,6 +147,41 @@ export default function Home() {
             </div>
           </Container>
         </section>
+
+        <section className="border-t border-zinc-200/60 py-14 dark:border-zinc-800/60">
+          <Container>
+            <h2 className="text-xl font-semibold tracking-tight">FAQ</h2>
+            <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
+              {[
+                {
+                  q: "Is this free?",
+                  a: "Yes. You can run the audit without creating an account.",
+                },
+                {
+                  q: "Do you store my data?",
+                  a: "Your inputs stay in your browser by default. If you choose to save/share a report, we store a sanitized version and never expose email or company on the public link.",
+                },
+                {
+                  q: "How do you calculate savings?",
+                  a: "With deterministic, explainable rules based on public pricing. No AI decides the math.",
+                },
+                {
+                  q: "What if my stack is already optimal?",
+                  a: "We will tell you. No made-up savings. You can still opt in to get updates when new optimizations apply.",
+                },
+                {
+                  q: "Why is Credex mentioned?",
+                  a: "If your savings opportunity is large, Credex can help capture it through discounted credits and a quick consultation.",
+                },
+              ].map((faq) => (
+                <div key={faq.q}>
+                  <div className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{faq.q}</div>
+                  <div className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">{faq.a}</div>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
       </main>
 
       <footer className="border-t border-zinc-200/60 py-10 text-sm text-zinc-500 dark:border-zinc-800/60 dark:text-zinc-400">

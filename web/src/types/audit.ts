@@ -31,9 +31,16 @@ export type AuditTotals = {
 
 export type CredexCtaTier = "none" | "soft" | "prominent";
 
+export type AuditOpportunity = {
+  kind: "credex_credits" | "consolidate_vendor" | "info";
+  description: string;
+  relevantToolIds?: ToolId[];
+};
+
 export type AuditResult = {
   input: SpendFormInput;
   findings: AuditFinding[];
+  opportunities: AuditOpportunity[];
   totals: AuditTotals;
   credexCtaTier: CredexCtaTier;
 };

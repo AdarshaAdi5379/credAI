@@ -126,12 +126,12 @@ export function SpendAuditForm() {
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <label className="flex flex-col gap-1">
           <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Team size</span>
-          <input
-            inputMode="numeric"
-            className="h-10 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
-            value={input.teamSize}
-            onChange={(e) => setInput({ ...input, teamSize: Number(e.target.value || 0) })}
-          />
+            <input
+              inputMode="numeric"
+              className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+              value={input.teamSize}
+              onChange={(e) => setInput({ ...input, teamSize: Number(e.target.value || 0) })}
+            />
         </label>
 
         <label className="flex flex-col gap-1 md:col-span-2">
@@ -139,7 +139,7 @@ export function SpendAuditForm() {
             Primary use case
           </span>
           <select
-            className="h-10 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+            className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
             value={input.primaryUseCase}
             onChange={(e) =>
               setInput({ ...input, primaryUseCase: e.target.value as SpendFormInput["primaryUseCase"] })
@@ -184,7 +184,7 @@ export function SpendAuditForm() {
                   <tr key={idx} className="border-t border-zinc-100 dark:border-zinc-900">
                     <td className="py-2 pr-3">
                       <select
-                        className="h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                        className="h-11 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
                         value={item.toolId}
                         onChange={(e) =>
                           updateItem(idx, {
@@ -202,7 +202,7 @@ export function SpendAuditForm() {
                     </td>
                     <td className="py-2 pr-3">
                       <select
-                        className="h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                        className="h-11 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
                         value={effectivePlanId}
                         onChange={(e) => updateItem(idx, { planId: e.target.value })}
                       >
@@ -216,7 +216,7 @@ export function SpendAuditForm() {
                     <td className="py-2 pr-3">
                       <input
                         inputMode="numeric"
-                        className="h-10 w-28 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                        className="h-11 w-28 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
                         value={item.seats}
                         onChange={(e) => updateItem(idx, { seats: Number(e.target.value || 0) })}
                       />
@@ -224,7 +224,7 @@ export function SpendAuditForm() {
                     <td className="py-2 pr-3">
                       <input
                         inputMode="decimal"
-                        className="h-10 w-40 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                        className="h-11 w-40 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
                         value={item.monthlySpendUsd}
                         onChange={(e) => updateItem(idx, { monthlySpendUsd: Number(e.target.value || 0) })}
                       />
@@ -311,6 +311,20 @@ export function SpendAuditForm() {
               </div>
             ))}
           </div>
+
+          {result.opportunities.length > 0 ? (
+            <div className="mt-5 space-y-2">
+              <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Opportunities</div>
+              {result.opportunities.map((opp, i) => (
+                <div
+                  key={i}
+                  className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200"
+                >
+                  {opp.description}
+                </div>
+              ))}
+            </div>
+          ) : null}
 
           <div className="mt-5 text-sm text-zinc-700 dark:text-zinc-300">
             <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Fallback summary</div>

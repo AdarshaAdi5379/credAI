@@ -1,5 +1,6 @@
 import type {
   AuditFinding,
+  AuditOpportunity,
   AuditResult,
   AuditTotals,
   CredexCtaTier,
@@ -11,6 +12,13 @@ import type {
 import { getPlanUnitPriceUsd } from "@/services/pricing";
 
 export const HIGH_SAVINGS_CTA_THRESHOLD_USD = 500;
+const CREDEX_ELIGIBLE_TOOLS: ToolId[] = ["cursor", "claude", "chatgpt", "github_copilot"];
+const API_TOOLS: ToolId[] = ["anthropic_api", "openai_api", "gemini_api"];
+const VENDOR_API_MAP: Record<string, { api: ToolId; sub: ToolId }> = {
+  anthropic: { api: "anthropic_api", sub: "claude" },
+  openai: { api: "openai_api", sub: "chatgpt" },
+  google: { api: "gemini_api", sub: "gemini" },
+};
 
 function round2(n: number): number {
   return Math.round(n * 100) / 100;
@@ -79,7 +87,6 @@ function recommendPlanPerSeat(
 function applyDeterministicRules(current: SpendLineItemInput, input: SpendFormInput): AuditFinding {
   const { toolId, planId, seats } = current;
 
-  // Rule: "Team plan for 2 users is often wasteful" → suggest individual plans when safe.
   if (toolId === "claude" && planId === "team" && seats <= 2) {
     const unitPriceUsd = getPlanUnitPriceUsd("claude", "pro");
     if (unitPriceUsd != null) {
@@ -116,18 +123,111 @@ function applyDeterministicRules(current: SpendLineItemInput, input: SpendFormIn
     }
   }
 
-  // Default: keep (we don’t guess).
-  // Also, never recommend a plan we can’t price deterministically.
-  void input;
   return keepFinding(current);
+}
+
+function findApiSubRedundancies(input: SpendFormInput): AuditFinding[] {
+  const redundancies: AuditFinding[] = [];
+
+  for (const [, pair] of Object.entries(VENDOR_API_MAP)) {
+    const hasApi = input.items.some((i) => i.toolId === pair.api);
+    const hasSub = input.items.some((i) => i.toolId === pair.sub);
+    if (hasApi && hasSub) {
+      const subItem = input.items.find((i) => i.toolId === pair.sub);
+      const apiItem = input.items.find((i) => i.toolId === pair.api);
+      if (subItem) {
+        redundancies.push({
+          toolId: pair.sub,
+          current: subItem,
+          recommendation: {
+            kind: "switch_tool",
+            toolId: pair.sub,
+            planId: subItem.planId,
+            estimatedMonthlyUsd: subItem.monthlySpendUsd,
+          },
+          monthlySavingsUsd: apiItem ? round2(subItem.monthlySpendUsd + apiItem.monthlySpendUsd - subItem.monthlySpendUsd) : 0,
+          reason: `You're paying for both ${pair.sub} subscription and ${pair.api} access. Evaluate if one channel covers your needs — using both often means unused quota on one side.`,
+        });
+      }
+    }
+  }
+
+  return redundancies;
+}
+
+function findUseCaseObservations(input: SpendFormInput): AuditFinding[] {
+  const { primaryUseCase, items } = input;
+  const observations: AuditFinding[] = [];
+
+  const codingTools = new Set<ToolId>(["cursor", "github_copilot", "claude"]);
+  const writingTools = new Set<ToolId>(["claude", "chatgpt"]);
+
+  if (primaryUseCase === "coding") {
+    const hasCodingTool = items.some((i) => codingTools.has(i.toolId));
+    if (!hasCodingTool && items.length > 0) {
+      observations.push({
+        toolId: items[0].toolId,
+        current: items[0],
+        recommendation: {
+          kind: "keep",
+          toolId: items[0].toolId,
+          planId: items[0].planId,
+          estimatedMonthlyUsd: items[0].monthlySpendUsd,
+        },
+        monthlySavingsUsd: 0,
+        reason: "Your primary use case is coding, but your current stack may lack a purpose-built coding assistant like Cursor or GitHub Copilot — these often pay for themselves in productivity gains.",
+      });
+    }
+  }
+
+  if (primaryUseCase === "writing") {
+    const hasWritingTool = items.some((i) => writingTools.has(i.toolId));
+    if (!hasWritingTool && items.length > 0) {
+      observations.push({
+        toolId: items[0].toolId,
+        current: items[0],
+        recommendation: {
+          kind: "keep",
+          toolId: items[0].toolId,
+          planId: items[0].planId,
+          estimatedMonthlyUsd: items[0].monthlySpendUsd,
+        },
+        monthlySavingsUsd: 0,
+        reason: "Your primary use case is writing, and Claude or ChatGPT are strong options for long-form content and editing.",
+      });
+    }
+  }
+
+  return observations;
+}
+
+function findCredexOpportunities(input: SpendFormInput, findings: AuditFinding[]): AuditOpportunity[] {
+  const opportunities: AuditOpportunity[] = [];
+  const totalMonthlySpend = sum(input.items.filter((i) => CREDEX_ELIGIBLE_TOOLS.includes(i.toolId)).map((i) => i.monthlySpendUsd));
+
+  if (totalMonthlySpend > 0) {
+    opportunities.push({
+      kind: "credex_credits",
+      description: `You're spending ~$${round2(totalMonthlySpend)}/mo on tools where Credex offers discounted credits (Cursor, Claude, ChatGPT, GitHub Copilot). Explore whether credits can lower your effective rate.`,
+      relevantToolIds: CREDEX_ELIGIBLE_TOOLS.filter((t) => input.items.some((i) => i.toolId === t)),
+    });
+  }
+
+  return opportunities;
 }
 
 export function runAudit(input: SpendFormInput): AuditResult {
   const findings = input.items.map((item) => applyDeterministicRules(item, input));
-  const totals = calculateTotals(findings);
+  const redundancies = findApiSubRedundancies(input);
+  const observations = findUseCaseObservations(input);
+  const allFindings = [...findings, ...redundancies, ...observations];
+  const totals = calculateTotals(allFindings);
+  const opportunities = findCredexOpportunities(input, allFindings);
+
   return {
     input,
-    findings,
+    findings: allFindings,
+    opportunities,
     totals,
     credexCtaTier: classifyCredexCtaTier(totals),
   };
