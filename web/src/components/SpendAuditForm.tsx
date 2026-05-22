@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
+import { AuditResults } from "@/components/AuditResults";
 import { Button } from "@/components/Button";
 import { useLocalStorageState } from "@/hooks/useLocalStorageState";
 import { parseSpendFormInput } from "@/lib/validation";
 import { runAudit } from "@/services/audit";
-import { buildFallbackSummary } from "@/services/summaryFallback";
 import type { AuditResult, SpendFormInput, ToolId, UseCaseId } from "@/types";
 import { TOOL_LABELS, TOOL_PLAN_LABELS } from "@/types/tools";
 
@@ -276,61 +276,7 @@ export function SpendAuditForm() {
       </div>
 
       {result ? (
-        <div className="mt-8 rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-900/20">
-          <div className="flex flex-col gap-1">
-            <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Estimated savings</div>
-            <div className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
-              ${result.totals.monthlySavingsUsd.toLocaleString("en-US")}/mo
-            </div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
-              ~${result.totals.annualSavingsUsd.toLocaleString("en-US")}/yr · CTA tier:{" "}
-              <span className="font-medium">{result.credexCtaTier}</span>
-            </div>
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 gap-3">
-            {result.findings.map((f, i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-zinc-200 bg-white p-4 text-sm dark:border-zinc-800 dark:bg-zinc-950"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="font-medium text-zinc-950 dark:text-zinc-50">{TOOL_LABELS[f.toolId]}</div>
-                  <div className="text-zinc-600 dark:text-zinc-400">
-                    Savings:{" "}
-                    <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                      ${f.monthlySavingsUsd.toLocaleString("en-US")}/mo
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-1 text-zinc-600 dark:text-zinc-400">{f.reason}</div>
-                <div className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-                  Current: {f.current.planId} (${f.current.monthlySpendUsd}/mo) · Recommended:{" "}
-                  {f.recommendation.planId} (${f.recommendation.estimatedMonthlyUsd}/mo)
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {result.opportunities.length > 0 ? (
-            <div className="mt-5 space-y-2">
-              <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Opportunities</div>
-              {result.opportunities.map((opp, i) => (
-                <div
-                  key={i}
-                  className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200"
-                >
-                  {opp.description}
-                </div>
-              ))}
-            </div>
-          ) : null}
-
-          <div className="mt-5 text-sm text-zinc-700 dark:text-zinc-300">
-            <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Fallback summary</div>
-            <p className="mt-1">{buildFallbackSummary(result)}</p>
-          </div>
-        </div>
+        <AuditResults result={result} onReset={() => setResult(null)} />
       ) : null}
     </div>
   );
