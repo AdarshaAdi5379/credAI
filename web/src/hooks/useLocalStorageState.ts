@@ -27,7 +27,7 @@ export function useLocalStorageState<T>(key: string, initialValue: T) {
     }
 
     try {
-      setValue(JSON.parse(raw) as T);
+      queueMicrotask(() => setValue(JSON.parse(raw) as T));
     } catch {
       storage.removeItem(key);
     } finally {

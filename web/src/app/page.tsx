@@ -1,7 +1,5 @@
-import Link from "next/link";
-
-import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
+import { ScrollButton } from "@/components/ScrollButton";
 import { SpendAuditForm } from "@/components/SpendAuditForm";
 
 export default function Home() {
@@ -11,21 +9,12 @@ export default function Home() {
         <Container>
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-black text-white dark:bg-white dark:text-black" />
+                <div className="h-8 w-8 rounded-lg bg-black text-white dark:bg-white dark:text-black" role="img" aria-label="AI Spend Audit logo" />
               <div className="text-sm font-semibold tracking-tight">AI Spend Audit</div>
             </div>
             <div className="flex items-center gap-2">
-              <Link
-                href="#audit"
-                className="hidden text-sm text-zinc-600 hover:text-zinc-900 md:inline dark:text-zinc-400 dark:hover:text-zinc-100"
-              >
-                Run audit
-              </Link>
-              <a href="#audit" className="inline-flex">
-                <Button type="button" variant="secondary">
-                  Start
-                </Button>
-              </a>
+              <ScrollButton href="#audit" variant="ghost" className="hidden md:inline-flex">Run audit</ScrollButton>
+              <ScrollButton href="#audit" variant="secondary">Start</ScrollButton>
             </div>
           </div>
         </Container>
@@ -47,14 +36,8 @@ export default function Home() {
                   instant, defensible spend audit and a clear savings plan - no login.
                 </p>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                  <a href="#audit">
-                    <Button type="button">Run my audit</Button>
-                  </a>
-                  <a href="#example">
-                    <Button type="button" variant="secondary">
-                      See what you get
-                    </Button>
-                  </a>
+                  <ScrollButton href="#audit">Run my audit</ScrollButton>
+                  <ScrollButton href="#example" variant="secondary">See what you get</ScrollButton>
                 </div>
 
                 <div className="mt-6 grid grid-cols-2 gap-3 text-sm text-zinc-600 dark:text-zinc-400">
@@ -140,8 +123,8 @@ export default function Home() {
                   key={card.title}
                   className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950"
                 >
-                  <div className="text-sm font-semibold">{card.title}</div>
-                  <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{card.body}</div>
+                  <h2 className="text-sm font-semibold">{card.title}</h2>
+                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{card.body}</p>
                 </div>
               ))}
             </div>
@@ -175,8 +158,8 @@ export default function Home() {
                 },
               ].map((faq) => (
                 <div key={faq.q}>
-                  <div className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{faq.q}</div>
-                  <div className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">{faq.a}</div>
+                  <h3 className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{faq.q}</h3>
+                  <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">{faq.a}</p>
                 </div>
               ))}
             </div>

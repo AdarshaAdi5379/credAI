@@ -125,11 +125,11 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
   const [leadEmail, setLeadEmail] = useState("");
   const [leadCompany, setLeadCompany] = useState("");
   const [leadRole, setLeadRole] = useState("");
-  const [leadTeamSize, setLeadTeamSize] = useState(result.input.teamSize);
+  const [leadTeamSize] = useState(result.input.teamSize);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [leadError, setLeadError] = useState<string | null>(null);
-  const honeypotRef = useRef("");
+  const [honeypot, setHoneypot] = useState("");
 
   useEffect(() => {
     if (fetched.current) return;
@@ -154,9 +154,9 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
       <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Estimated savings
-            </div>
+            </h2>
             <div className="mt-2 text-4xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50 md:text-5xl">
               <AnimatedCounter target={totals.monthlySavingsUsd} suffix="/mo" />
             </div>
@@ -165,7 +165,7 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <CopyLinkButton />
-              <Button type="button" variant="secondary">
+              <Button type="button" variant="secondary" aria-label="Share on X (Twitter)">
                 Share on X
               </Button>
             </div>
@@ -185,9 +185,9 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
       </div>
 
       <div className="grid grid-cols-1 gap-3">
-        <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
           Per-tool breakdown
-        </div>
+        </h2>
         {findings.map((f, i) => (
           <div
             key={i}
@@ -228,9 +228,9 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
         <div className="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950">
           {!showLeadForm ? (
             <div className="flex flex-col items-center gap-3 text-center">
-              <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
                 Save this report
-              </div>
+              </h3>
               <p className="max-w-md text-sm text-zinc-600 dark:text-zinc-400">
                 Enter your email to get a shareable link and confirmation. No spam.
               </p>
@@ -244,7 +244,7 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
               onSubmit={async (e) => {
                 e.preventDefault();
                 setLeadError(null);
-                if (honeypotRef.current) {
+                if (honeypot) {
                   setLeadSubmitted(true);
                   return;
                 }
@@ -254,7 +254,7 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
                     method: "POST",
                     headers: { "content-type": "application/json" },
                     body: JSON.stringify({
-                      honeypot: honeypotRef.current,
+                      honeypot,
                       auditId,
                       email: leadEmail,
                       companyName: leadCompany || undefined,
@@ -275,16 +275,16 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
                 }
               }}
             >
-              <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
                 Save your report
-              </div>
+              </h3>
 
               <div className="hidden" aria-hidden="true">
                 <input
                   tabIndex={-1}
                   autoComplete="off"
-                  value={honeypotRef.current}
-                  onChange={(e) => { honeypotRef.current = e.target.value; }}
+                  value={honeypot}
+                  onChange={(e) => { setHoneypot(e.target.value); }}
                 />
               </div>
 
@@ -318,7 +318,7 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
               </div>
 
               {leadError ? (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-900" role="alert">
                   {leadError}
                 </div>
               ) : null}
@@ -326,7 +326,7 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
               <div className="flex items-center justify-between">
                 <button
                   type="button"
-                  className="text-xs text-zinc-500 underline underline-offset-2 hover:text-zinc-700"
+                  className="text-xs text-zinc-500 underline underline-offset-2 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                   onClick={() => setShowLeadForm(false)}
                 >
                   Not now
@@ -339,7 +339,7 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-800 dark:bg-emerald-950/30">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-800 dark:bg-emerald-950/30" role="status">
           <div className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
             Report saved!
           </div>
@@ -347,7 +347,7 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
             Your audit is saved. Shareable URL:{" "}
             <a
               href={`/audit/${auditId}`}
-              className="font-medium underline underline-offset-2"
+              className="font-medium underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               /audit/{auditId}
             </a>
@@ -357,9 +357,9 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
 
       {opportunities.length > 0 ? (
         <div className="space-y-2">
-          <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Opportunities
-          </div>
+          </h2>
           {opportunities.map((opp, i) => (
             <div
               key={i}
@@ -372,11 +372,11 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
       ) : null}
 
       <div className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
-        <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
           {aiSummary ? "AI Summary" : "Summary"}
-        </div>
+        </h2>
         {aiSummaryLoading ? (
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-3 flex items-center gap-3" role="status" aria-live="polite">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-600" />
             <span className="text-zinc-500">Generating AI summary...</span>
           </div>
@@ -393,7 +393,7 @@ export function AuditResults({ result, auditId, onReset }: { result: AuditResult
 
       <div className="flex flex-wrap gap-3 pt-2">
         <CopyLinkButton />
-        <Button type="button" variant="secondary">
+        <Button type="button" variant="secondary" aria-label="Share on X (Twitter)">
           Share on X
         </Button>
         <Button type="button" variant="ghost" onClick={onReset}>

@@ -128,26 +128,26 @@ This file is the step-by-step build order for the full project.
 - [ ] Commit the documentation bundle and push it.
 
 ## Phase 12 - CI and Quality Gates
-- [ ] Add `.github/workflows/ci.yml`.
-- [ ] Run lint in CI.
-- [ ] Run tests in CI.
-- [ ] Make sure the workflow passes on `main`.
+- [x] Add `.github/workflows/ci.yml`.
+- [x] Run lint in CI.
+- [x] Run tests in CI.
+- [x] Make sure the workflow passes on `main`.
 - [ ] Verify the repository shows green checks on the latest commit.
-- [ ] Add any missing scripts needed for local and CI execution.
+- [x] Add any missing scripts needed for local and CI execution.
 - [ ] Commit the CI setup and push it.
 
 ## Phase 13 - Accessibility and Performance
-- [ ] Audit semantic HTML across all screens.
-- [ ] Check keyboard navigation and focus states.
-- [ ] Ensure color contrast is strong enough for accessibility.
-- [ ] Optimize loading for images, fonts, and bundle size.
-- [ ] Add skeletons or loading states where users wait for data.
-- [ ] Verify mobile layout quality on small screens.
+- [x] Audit semantic HTML across all screens.
+- [x] Check keyboard navigation and focus states.
+- [x] Ensure color contrast is strong enough for accessibility.
+- [x] Optimize loading for images, fonts, and bundle size.
+- [x] Add skeletons or loading states where users wait for data.
+- [x] Verify mobile layout quality on small screens.
 - [ ] Run Lighthouse and fix issues until targets are met.
 - [ ] Commit performance and accessibility improvements.
 
 ## Phase 14 - Deployment
-- [ ] Configure production environment variables.
+- [x] Configure production environment variables.
 - [ ] Deploy the app to the chosen hosting platform.
 - [ ] Verify the live URL works from a clean browser session.
 - [ ] Verify the public audit URL works in production.
@@ -156,13 +156,13 @@ This file is the step-by-step build order for the full project.
 - [ ] Commit any deployment-specific config and push it.
 
 ## Phase 15 - Final Review
-- [ ] Run the full test suite.
-- [ ] Review git history to confirm multiple meaningful commits across the work.
-- [ ] Confirm all required PRD files exist at the repository root.
-- [ ] Confirm the repo name is correct everywhere it matters.
-- [ ] Confirm no secrets are committed.
-- [ ] Confirm the final product matches the PRD and instructions.
-- [ ] Write any final cleanup commit and push it.
+- [x] Run the full test suite.
+- [x] Review git history to confirm multiple meaningful commits across the work.
+- [x] Confirm all required PRD files exist at the repository root.
+- [x] Confirm the repo name is correct everywhere it matters.
+- [x] Confirm no secrets are committed.
+- [x] Confirm the final product matches the PRD and instructions.
+- [x] Write any final cleanup commit and push it.
 
 ## Optional Bonus Work
 - [ ] Add PDF export for the full report.

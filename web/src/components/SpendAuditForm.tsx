@@ -132,7 +132,7 @@ export function SpendAuditForm() {
           <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Team size</span>
             <input
               inputMode="numeric"
-              className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+              className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus-visible:outline-zinc-300"
               value={input.teamSize}
               onChange={(e) => setInput({ ...input, teamSize: Number(e.target.value || 0) })}
             />
@@ -143,7 +143,7 @@ export function SpendAuditForm() {
             Primary use case
           </span>
           <select
-            className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+            className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus-visible:outline-zinc-300"
             value={input.primaryUseCase}
             onChange={(e) =>
               setInput({ ...input, primaryUseCase: e.target.value as SpendFormInput["primaryUseCase"] })
@@ -168,12 +168,13 @@ export function SpendAuditForm() {
 
         <div className="overflow-x-auto">
           <table className="min-w-[820px] table-auto border-separate border-spacing-0">
+            <caption className="sr-only">Tools, plans, seats, and monthly spend</caption>
             <thead>
               <tr className="text-left text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                <th className="py-2 pr-3">Tool</th>
-                <th className="py-2 pr-3">Plan</th>
-                <th className="py-2 pr-3">Seats</th>
-                <th className="py-2 pr-3">Monthly spend (USD)</th>
+                <th id="th-tool" className="py-2 pr-3">Tool</th>
+                <th id="th-plan" className="py-2 pr-3">Plan</th>
+                <th id="th-seats" className="py-2 pr-3">Seats</th>
+                <th id="th-spend" className="py-2 pr-3">Monthly spend (USD)</th>
                 <th className="py-2 pr-3"></th>
               </tr>
             </thead>
@@ -188,7 +189,8 @@ export function SpendAuditForm() {
                   <tr key={idx} className="border-t border-zinc-100 dark:border-zinc-900">
                     <td className="py-2 pr-3">
                       <select
-                        className="h-11 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                        aria-labelledby="th-tool"
+                        className="h-11 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus-visible:outline-zinc-300"
                         value={item.toolId}
                         onChange={(e) =>
                           updateItem(idx, {
@@ -206,7 +208,8 @@ export function SpendAuditForm() {
                     </td>
                     <td className="py-2 pr-3">
                       <select
-                        className="h-11 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                        aria-labelledby="th-plan"
+                        className="h-11 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus-visible:outline-zinc-300"
                         value={effectivePlanId}
                         onChange={(e) => updateItem(idx, { planId: e.target.value })}
                       >
@@ -219,16 +222,18 @@ export function SpendAuditForm() {
                     </td>
                     <td className="py-2 pr-3">
                       <input
+                        aria-labelledby="th-seats"
                         inputMode="numeric"
-                        className="h-11 w-28 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                        className="h-11 w-28 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus-visible:outline-zinc-300"
                         value={item.seats}
                         onChange={(e) => updateItem(idx, { seats: Number(e.target.value || 0) })}
                       />
                     </td>
                     <td className="py-2 pr-3">
                       <input
+                        aria-labelledby="th-spend"
                         inputMode="decimal"
-                        className="h-11 w-40 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
+                        className="h-11 w-40 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus-visible:outline-zinc-300"
                         value={item.monthlySpendUsd}
                         onChange={(e) => updateItem(idx, { monthlySpendUsd: Number(e.target.value || 0) })}
                       />
@@ -251,7 +256,7 @@ export function SpendAuditForm() {
         </div>
 
         {fieldErrors.length > 0 ? (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900" role="alert">
             <div className="font-medium">Fix these inputs:</div>
             <ul className="mt-1 list-disc pl-5">
               {fieldErrors.slice(0, 6).map((e, i) => (
@@ -264,7 +269,7 @@ export function SpendAuditForm() {
         ) : null}
 
         {submitError ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-900" role="alert">
             {submitError}
           </div>
         ) : null}

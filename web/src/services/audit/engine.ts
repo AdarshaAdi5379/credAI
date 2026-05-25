@@ -13,7 +13,6 @@ import { getPlanUnitPriceUsd } from "@/services/pricing";
 
 export const HIGH_SAVINGS_CTA_THRESHOLD_USD = 500;
 const CREDEX_ELIGIBLE_TOOLS: ToolId[] = ["cursor", "claude", "chatgpt", "github_copilot"];
-const API_TOOLS: ToolId[] = ["anthropic_api", "openai_api", "gemini_api"];
 const VENDOR_API_MAP: Record<string, { api: ToolId; sub: ToolId }> = {
   anthropic: { api: "anthropic_api", sub: "claude" },
   openai: { api: "openai_api", sub: "chatgpt" },
@@ -84,7 +83,7 @@ function recommendPlanPerSeat(
   };
 }
 
-function applyDeterministicRules(current: SpendLineItemInput, input: SpendFormInput): AuditFinding {
+function applyDeterministicRules(current: SpendLineItemInput, _input: SpendFormInput): AuditFinding {
   const { toolId, planId, seats } = current;
 
   if (toolId === "claude" && planId === "team" && seats <= 2) {
@@ -201,7 +200,7 @@ function findUseCaseObservations(input: SpendFormInput): AuditFinding[] {
   return observations;
 }
 
-function findCredexOpportunities(input: SpendFormInput, findings: AuditFinding[]): AuditOpportunity[] {
+function findCredexOpportunities(input: SpendFormInput, _findings: AuditFinding[]): AuditOpportunity[] {
   const opportunities: AuditOpportunity[] = [];
   const totalMonthlySpend = sum(input.items.filter((i) => CREDEX_ELIGIBLE_TOOLS.includes(i.toolId)).map((i) => i.monthlySpendUsd));
 
