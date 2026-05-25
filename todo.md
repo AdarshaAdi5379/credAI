@@ -116,15 +116,15 @@ This file is the step-by-step build order for the full project.
 - [ ] Commit the shareable URL feature.
 
 ## Phase 11 - Required Documentation
-- [ ] Write `README.md` with summary, screenshots or recording, quick start, decisions, and deployed URL.
-- [ ] Write `ARCHITECTURE.md` with system diagram, data flow, stack choice, and scaling notes.
-- [ ] Write `DEVLOG.md` with seven dated entries matching the required format.
-- [ ] Write `REFLECTION.md` with all five required answers.
-- [ ] Write `TESTS.md` with every automated test, what it covers, and how to run it.
-- [ ] Write or update `PRICING_DATA.md` with source URLs and verification dates.
-- [ ] Write or update `PROMPTS.md` with the full LLM prompt and rationale.
-- [ ] Write `GTM.md`, `ECONOMICS.md`, `USER_INTERVIEWS.md`, `LANDING_COPY.md`, and `METRICS.md`.
-- [ ] Review all docs for consistency with the actual implementation.
+- [x] Write `README.md` with summary, screenshots or recording, quick start, decisions, and deployed URL.
+- [x] Write `ARCHITECTURE.md` with system diagram, data flow, stack choice, and scaling notes.
+- [x] Write `DEVLOG.md` with seven dated entries matching the required format.
+- [x] Write `REFLECTION.md` with all five required answers.
+- [x] Write `TESTS.md` with every automated test, what it covers, and how to run it.
+- [x] Write or update `PRICING_DATA.md` with source URLs and verification dates.
+- [x] Write or update `PROMPTS.md` with the full LLM prompt and rationale.
+- [x] Write `GTM.md`, `ECONOMICS.md`, `USER_INTERVIEWS.md`, `LANDING_COPY.md`, and `METRICS.md`.
+- [x] Review all docs for consistency with the actual implementation.
 - [ ] Commit the documentation bundle and push it.
 
 ## Phase 12 - CI and Quality Gates
